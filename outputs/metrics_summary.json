@@ -1,0 +1,14 @@
+[
+    {
+        "model": "DistilBERT",
+        "accuracy": 1.0,
+        "macro_f1": 1.0,
+        "avg_latency_ms": 23.146490000362974
+    },
+    {
+        "model": "RoBERTa",
+        "accuracy": 1.0,
+        "macro_f1": 1.0,
+        "avg_latency_ms": 190.40489500039257
+    }
+]

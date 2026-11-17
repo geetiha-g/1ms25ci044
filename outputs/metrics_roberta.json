@@ -1,0 +1,6 @@
+{
+    "accuracy": 1.0,
+    "macro_f1": 1.0,
+    "avg_latency_ms": 190.40489500039257,
+    "total_inference_s": 3.8080979000078514
+}

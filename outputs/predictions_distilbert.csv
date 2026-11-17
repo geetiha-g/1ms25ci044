@@ -1,0 +1,21 @@
+text,reference,prediction,correct
+I absolutely loved this movie!,1,1,True
+This was a fantastic experience.,1,1,True
+The product works perfectly.,1,1,True
+I am very happy with the results.,1,1,True
+What a wonderful day!,1,1,True
+The service was excellent.,1,1,True
+I really enjoyed this.,1,1,True
+This is one of the best things I have bought.,1,1,True
+I would definitely recommend it.,1,1,True
+Everything was amazing.,1,1,True
+I hated this movie.,0,0,True
+This was a terrible experience.,0,0,True
+The product stopped working.,0,0,True
+I am very disappointed.,0,0,True
+What a horrible day!,0,0,True
+The service was awful.,0,0,True
+I really disliked this.,0,0,True
+This is one of the worst things I have bought.,0,0,True
+I would never recommend it.,0,0,True
+Everything was terrible.,0,0,True

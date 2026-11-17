@@ -1,0 +1,6 @@
+text,prediction,sentiment
+The food was delicious and the staff were friendly.,1,POSITIVE
+I regret buying this product.,0,NEGATIVE
+"The experience was okay, nothing special.",0,NEGATIVE
+I am extremely satisfied with this purchase.,1,POSITIVE
+The movie was boring and disappointing.,0,NEGATIVE
