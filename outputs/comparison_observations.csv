@@ -1,0 +1,6 @@
+text,reference,distilbert_prediction,roberta_prediction,comment
+"I absolutely loved this movie!",1,1,1,"Both models correctly identify strongly positive sentiment."
+"The product works perfectly.",1,1,1,"Both models recognize the positive product experience."
+"I hated this movie.",0,0,0,"Both models correctly identify strongly negative sentiment."
+"The service was awful.",0,0,0,"Both models recognize the negative service experience."
+"Everything was amazing.",1,1,1,"Both models agree on the strongly positive sentiment."
