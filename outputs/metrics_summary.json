@@ -3,12 +3,14 @@
         "model": "DistilBERT",
         "accuracy": 1.0,
         "macro_f1": 1.0,
-        "avg_latency_ms": 23.146490000362974
+        "avg_latency_ms": 23.146490000362974,
+        "total_inference_s": 0.4629298000072595
     },
     {
         "model": "RoBERTa",
         "accuracy": 1.0,
         "macro_f1": 1.0,
-        "avg_latency_ms": 190.40489500039257
+        "avg_latency_ms": 190.40489500039257,
+        "total_inference_s": 3.8080979000078514
     }
 ]

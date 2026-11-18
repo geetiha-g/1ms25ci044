@@ -1,1 +1,6 @@
-
+﻿text,distilbert_prediction,roberta_prediction,comment
+"The acting was good, although the story was painfully boring.",1,0,"Mixed positive and negative opinion; models differ on overall sentiment."
+"I cannot say that I disliked the experience.",0,1,"Negated wording makes sentiment interpretation less straightforward."
+"Some parts were brilliant, while others were awful.",1,0,"The sentence contains both positive and negative opinions."
+"I would recommend it if you enjoy wasting your money.",0,1,"Sarcastic wording communicates a negative opinion."
+"The quality is acceptable, though the price is ridiculous.",1,0,"Mixed product assessment; models differ on overall sentiment."

@@ -244,6 +244,11 @@ def evaluate_model(model_id, role, run_name):
             "transformers_version": transformers.__version__,
             "torch_version": torch.__version__,
             "mlflow_version": mlflow.__version__,
+            "library_versions": (
+                f"transformers={transformers.__version__}; "
+                f"torch={torch.__version__}; "
+                f"mlflow={mlflow.__version__}"
+            ),
             "dataset_name": "custom_sentiment_dataset"
         })
 
@@ -352,16 +357,19 @@ summary = pd.DataFrame([
         "model": "DistilBERT",
         "accuracy": model_a_results["accuracy"],
         "macro_f1": model_a_results["macro_f1"],
-        "avg_latency_ms": model_a_results["avg_latency_ms"]
+        "avg_latency_ms": model_a_results["avg_latency_ms"],
+        "total_inference_s": model_a_results["total_inference_s"]
     },
     {
         "model": "RoBERTa",
         "accuracy": model_b_results["accuracy"],
         "macro_f1": model_b_results["macro_f1"],
-        "avg_latency_ms": model_b_results["avg_latency_ms"]
+        "avg_latency_ms": model_b_results["avg_latency_ms"],
+        "total_inference_s": model_b_results["total_inference_s"]
     }
 ])
 
+# Save all four comparison metrics.
 summary_file = os.path.join(
     OUTPUT_DIR,
     "metrics_summary.json"
@@ -371,31 +379,52 @@ with open(summary_file, "w") as file:
     json.dump(summary.to_dict(orient="records"), file, indent=4)
 
 
-# Comparison graph
-summary.set_index("model").plot(
-    kind="bar",
-    figsize=(9, 5)
-)
+# Create a four-panel comparison figure so each metric has
+# its own scale and the values remain easy to compare.
+fig, axes = plt.subplots(2, 2, figsize=(12, 8))
 
-plt.title("Champion vs Challenger Comparison")
-plt.ylabel("Metric value")
-plt.xticks(rotation=0)
-plt.tight_layout()
+metrics_to_plot = [
+    ("accuracy", "Accuracy", "Score"),
+    ("macro_f1", "Macro-F1", "Score"),
+    ("avg_latency_ms", "Average Latency", "Milliseconds"),
+    ("total_inference_s", "Total Inference Time", "Seconds")
+]
+
+for ax, (metric, title, ylabel) in zip(axes.flatten(), metrics_to_plot):
+    summary.plot(
+        kind="bar",
+        x="model",
+        y=metric,
+        ax=ax,
+        legend=False
+    )
+    ax.set_title(title)
+    ax.set_ylabel(ylabel)
+    ax.set_xlabel("")
+    ax.tick_params(axis="x", rotation=0)
+
+    if metric in ("accuracy", "macro_f1"):
+        ax.set_ylim(0, 1.05)
+
+fig.suptitle("Champion vs Challenger Comparison")
+fig.tight_layout()
 
 comparison_plot = os.path.join(
     OUTPUT_DIR,
     "model_comparison.png"
 )
 
-plt.savefig(comparison_plot)
-plt.close()
+fig.savefig(comparison_plot, bbox_inches="tight")
+plt.close(fig)
 
 
 # --------------------------------------------------
-# 8. FIND FIVE DISAGREEMENT EXAMPLES
+# 8. CHECK EVALUATION DISAGREEMENTS
 # --------------------------------------------------
 
-disagreements = []
+# Keep evaluation-set disagreements separate from the five curated
+# supplemental examples already stored in disagreement_examples.csv.
+evaluation_disagreements = []
 
 for i in range(len(texts)):
 
@@ -404,24 +433,27 @@ for i in range(len(texts)):
         != model_b_results["predictions"][i]
     ):
 
-        disagreements.append({
+        evaluation_disagreements.append({
             "text": texts[i],
             "reference": y_true[i],
             "distilbert_prediction": model_a_results["predictions"][i],
             "roberta_prediction": model_b_results["predictions"][i]
         })
 
-        if len(disagreements) == 5:
-            break
-
-disagreement_file = os.path.join(
+evaluation_disagreement_file = os.path.join(
     OUTPUT_DIR,
-    "disagreement_examples.csv"
+    "evaluation_disagreements.csv"
 )
 
-pd.DataFrame(disagreements).to_csv(
-    disagreement_file,
+pd.DataFrame(evaluation_disagreements).to_csv(
+    evaluation_disagreement_file,
     index=False
+)
+
+# This is the separate, manually reviewed supplemental set of five examples.
+supplemental_disagreement_file = os.path.join(
+    OUTPUT_DIR,
+    "disagreement_examples.csv"
 )
 
 
@@ -444,9 +476,14 @@ with mlflow.start_run(run_name="compare_sentiment"):
 
     mlflow.log_artifact(summary_file)
     mlflow.log_artifact(comparison_plot)
-    mlflow.log_artifact(disagreement_file)
+    mlflow.log_artifact(evaluation_disagreement_file)
 
-    mlflow.log_artifact("README.md")
+    # Log the five curated supplemental examples when the file is present.
+    if os.path.exists(supplemental_disagreement_file):
+        mlflow.log_artifact(supplemental_disagreement_file)
+
+    if os.path.exists("README.md"):
+        mlflow.log_artifact("README.md")
 
 
 # --------------------------------------------------
